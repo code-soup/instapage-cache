@@ -85,7 +85,7 @@ trait HelpersTrait {
      */
     private function get_constant( string $key ): string {
 
-        $constants = \CodeSoup\Init::$constants;
+        $constants = \CodeSoup\InstapageCache\Init::$constants;
         $name      = trim( strtoupper( $key ) );
 
         // Check if constant is defined first

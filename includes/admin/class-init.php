@@ -33,7 +33,7 @@ class Init {
 	public function __construct() {
 
 		// Main plugin instance.
-		$instance     = \CodeSoup\InstapageCache\plugin_instance();
+		$instance     = \CodeSoup\InstapageCache\Init::get_instance();
 		$hooker       = $instance->get_hooker();
 		$this->assets = $instance->get_assets();
 

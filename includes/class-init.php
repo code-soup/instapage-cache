@@ -117,9 +117,6 @@ final class Init {
 		// WP Admin related stuff.
 		new Admin\Init();
 
-		// Public related stuff.
-		new Frontend\Init();
-
 		// Run all hooks
 		$this->run();
 	}
