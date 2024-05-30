@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeSoup\Admin;
+namespace CodeSoup\InstapageCache\Admin;
 
 // Exit if accessed directly
 defined( 'WPINC' ) || die;
@@ -15,7 +15,7 @@ defined( 'WPINC' ) || die;
  */
 class Init {
 
-	use \CodeSoup\Traits\HelpersTrait;
+	use \CodeSoup\InstapageCache\Traits\HelpersTrait;
 
 	// Main plugin instance.
 	protected static $instance = null;
@@ -33,7 +33,7 @@ class Init {
 	public function __construct() {
 
 		// Main plugin instance.
-		$instance     = \CodeSoup\plugin_instance();
+		$instance     = \CodeSoup\InstapageCache\plugin_instance();
 		$hooker       = $instance->get_hooker();
 		$this->assets = $instance->get_assets();
 

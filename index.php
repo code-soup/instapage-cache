@@ -17,13 +17,13 @@ defined('WPINC') || die;
 register_activation_hook( __FILE__, function() {
 
     // On activate do this
-    \CodeSoup\Activator::activate();
+    \CodeSoup\InstapageCache\Activator::activate();
 });
 
 register_deactivation_hook( __FILE__, function () {
     
     // On deactivate do that
-    \CodeSoup\Deactivator::deactivate();
+    \CodeSoup\InstapageCache\Deactivator::deactivate();
 });
 
 include "run.php";

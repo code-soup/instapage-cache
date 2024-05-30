@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeSoup;
+namespace CodeSoup\InstapageCache;
 
 // Exit if accessed directly
 defined( 'WPINC' ) || die;

@@ -15,7 +15,7 @@ require "vendor/autoload.php";
  */
 function plugin_instance() {
 
-    return \CodeSoup\Init::get_instance();
+    return \CodeSoup\InstapageCache\Init::get_instance();
 }
 
 // Init plugin
@@ -25,7 +25,7 @@ $plugin->set_constants([
     'MIN_WP_VERSION'               => '6.0',
     'MIN_PHP_VERSION'              => '8.2',
     'MIN_MYSQL_VERSION'            => '',
-    'PLUGIN_PREFIX'                => 'codesoup_ilc',
+    'PLUGIN_PREFIX'                => 'codesoup_ilc_',
     'PLUGIN_NAME'                  => 'Instapage Local Cache',
     'PLUGIN_VERSION'               => '0.0.1',
 ]);
