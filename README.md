@@ -1,4 +1,4 @@
-## WordPress Plugin Boilerplate
+## Instapage Cache
 
 Updated verision of [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
 Includes a Webpack build script and webpack-dev-server for local development.

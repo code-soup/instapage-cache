@@ -4,8 +4,9 @@ defined('WPINC') || die;
 
 /**
  * Plugin Name: Instapage Local Cache
- * Description: Optimize Instapage with local caching. Easily manage and clear cache to boost performance and speed up page load times.
+ * Description: Boost performance and reduce server load with Instapage Cache. This add-on for Instapage lets you easily manage and clear cache to speed up page load time.
  * Version: 0.0.1
+ * Requires Plugins: instapage
  * Requires at least: 6.0
  * Requires PHP: 8.2
  * Author: Code Soup

@@ -115,7 +115,9 @@ final class Init {
 		new I18n();
 
 		// WP Admin related stuff.
-		new Admin\Init();
+		new Admin\Init;
+		
+		new Admin\Caching;
 
 		// Run all hooks
 		$this->run();

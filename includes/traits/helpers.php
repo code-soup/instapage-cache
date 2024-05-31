@@ -10,6 +10,21 @@ defined( 'WPINC' ) || die;
  */
 trait HelpersTrait {
 
+    private function get_url_part($url, $part = 'path')
+    {
+        $parsed = wp_parse_url($url);
+
+        return $parsed[ $part ];
+    }
+
+    private function get_cache_dir_path( $slug ) {
+        return sprintf(
+            '%s/%s',
+            $this->get_constant('CACHE_BASE_DIR'),
+            $slug
+        );
+    }
+
     /**
      * Return absolute path to plugin dir
      * Always returns path without trailing slash
@@ -140,5 +155,20 @@ trait HelpersTrait {
     private function log( $variable ) {
 
         error_log( print_r( $variable, true ) );
+    }
+
+
+    private function debug( $variable ) {
+
+        printf(
+            '<pre>%s</pre>',
+            print_r( $variable )
+        );
+    }
+
+
+
+    private function get_option( $name, $section ) {
+        return Settings_Page::get_option($name, $section);
     }
 }

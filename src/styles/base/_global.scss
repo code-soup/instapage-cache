@@ -1,0 +1,42 @@
+#items-search {
+	border: 1px solid #ccc;
+	padding: 5px;
+	background: white;
+	margin-bottom: 12px;
+
+	form {
+		width: 100%;
+		display: flex;
+		max-width: 480px;
+	}
+
+	.input-text {
+		width: 100%;
+	}
+
+	.span-input {
+		width: 70%;
+		padding-right: 4px;
+	}
+
+	.span-button {
+		width: 30%;
+	}
+
+	button[type="reset"] {
+		margin-left: 4px;
+	}
+}
+
+.tablenav .tablenav-pages .button {
+	margin-left: 4px;
+}
+
+.tablenav #table-paging {
+	margin-left: 4px;
+	margin-right: 0px;
+}
+
+.td-right {
+	text-align: right !important;
+}

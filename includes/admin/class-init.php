@@ -38,7 +38,12 @@ class Init {
 		$this->assets = $instance->get_assets();
 
 		// Admin hooks.
-		$hooker->add_action( 'admin_enqueue_scripts', $this );
+		$hooker->add_actions([
+			['admin_enqueue_scripts', $this],
+			['rest_api_init', $this],
+		]);
+
+		new Settings_Page;
 	}
 
 	/**
@@ -47,14 +52,6 @@ class Init {
 	 * @since    1.0.0
 	 */
 	public function admin_enqueue_scripts() {
-
-		wp_enqueue_style(
-			$this->get_plugin_id('/wp/css'),
-			$this->assets->get('admin.css'),
-			array(),
-			$this->get_plugin_version(),
-			'all'
-		);
 
 		$script_id = $this->get_plugin_id('/wp/js');
 
@@ -70,10 +67,21 @@ class Init {
             $script_id,
             'codesoup_ilc',
             array(
-                'nonce'    => wp_create_nonce( 'codesoup_ilc_wp_xhr_nonce' ),
+                'root'     => get_rest_url(),
+                'nonce'    => wp_create_nonce( 'wp_rest' ),
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
                 'post_id'  => get_the_ID(),
             )
         );
 	}
+
+
+	/**
+	 * REST API Endpoint
+	 */
+	public function rest_api_init()
+	{
+        $rest = new APIController();
+        $rest->register_routes();
+    }
 }

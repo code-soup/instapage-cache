@@ -28,6 +28,7 @@ $plugin->set_constants([
     'PLUGIN_PREFIX'                => 'codesoup_ilc_',
     'PLUGIN_NAME'                  => 'Instapage Local Cache',
     'PLUGIN_VERSION'               => '0.0.1',
+    'CACHE_BASE_DIR'               => WP_CONTENT_DIR . '/instapage-cache',
 ]);
 
 $plugin->init();

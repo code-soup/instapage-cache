@@ -103,7 +103,7 @@
 	#############################################################################
 	-->
 
-	<config name="testVersion" value="5.6-"/>
+	<config name="testVersion" value="8.2-"/>
 	<rule ref="PHPCompatibilityWP"/>
 
 </ruleset>
