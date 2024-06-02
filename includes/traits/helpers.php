@@ -162,7 +162,7 @@ trait HelpersTrait {
 
         printf(
             '<pre>%s</pre>',
-            print_r( $variable )
+            print_r( esc_html( $variable ) )
         );
     }
 

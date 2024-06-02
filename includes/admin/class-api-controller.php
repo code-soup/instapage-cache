@@ -49,29 +49,26 @@ class APIController {
     public function get_items( \WP_REST_Request $request )
     {
         // Query args
-        $params   = $request->get_params();
-        $paged    = empty($params['page']) ? 1 : $params['page'];
-        $per_page = empty($params['per_page']) ? 15 : $params['per_page'];
+        $search   = $request->get_param('search');
+        $paged    = $request->get_param('page');
+        $per_page = $request->get_param('per_page');
         $offset   = intval( ($paged - 1) * $per_page );
 
         global $wpdb;
 
         // Base SQL for retrieving items
-        $sql = ["SELECT SQL_CALC_FOUND_ROWS * FROM {$wpdb->prefix}instapage_pages"];
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$wpdb->prefix}instapage_pages";
 
         // Search string
-        if ( ! empty($params['search']) )
-        {
-            $sql[] = $wpdb->prepare("WHERE slug LIKE %s", '%' . $wpdb->esc_like($params['search']) . '%');
+        if ( ! empty($search) ) {
+            $sql .= $wpdb->prepare(" WHERE slug LIKE %s", '%' . $wpdb->esc_like( $search ) . '%');
         }
 
-        // How many per page
-        $sql[] = sprintf( "LIMIT %d", $per_page );
-        $sql[] = sprintf( "OFFSET %d", $offset );
-        
-        // Run query for items
-        $qry = $wpdb->get_results(implode(' ', $sql), ARRAY_A);
+        // Add LIMIT and OFFSET
+        $sql .= $wpdb->prepare( " LIMIT %d OFFSET %d", $per_page, $offset );
 
+        // Run query for items
+        $qry = $wpdb->get_results( $sql, ARRAY_A );
 
         /**
          * Return
@@ -80,6 +77,8 @@ class APIController {
 
         foreach( $qry as $row )
         {
+
+            $fs   = new \WP_Filesystem_Direct('');
             $file = sprintf(
                 '%s/%s/index.html',
                 $this->get_constant('CACHE_BASE_DIR'),
@@ -87,7 +86,7 @@ class APIController {
             );
 
             $new           = $row;
-            $new['cached'] = intval( file_exists( $file ) );
+            $new['cached'] = intval( $fs->exists( $file ) );
 
             $items[] = $new;
         }

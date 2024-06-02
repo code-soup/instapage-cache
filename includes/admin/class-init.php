@@ -24,6 +24,7 @@ class Init {
 	// Assets loader class.
 	protected $assets;
 
+	protected $screen;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -36,6 +37,8 @@ class Init {
 		$instance     = \CodeSoup\InstapageCache\Init::get_instance();
 		$hooker       = $instance->get_hooker();
 		$this->assets = $instance->get_assets();
+		$this->screen = empty($_GET['page']) ? null : sanitize_title( $_GET['page'] );
+
 
 		// Admin hooks.
 		$hooker->add_actions([
@@ -52,6 +55,17 @@ class Init {
 	 * @since    1.0.0
 	 */
 	public function admin_enqueue_scripts() {
+
+		if ( 'instapage-cache' !== $this->screen )
+			return;
+
+		wp_enqueue_style(
+			$this->get_plugin_id('/wp/css'),
+			$this->assets->get('admin.css'),
+			array(),
+			$this->get_plugin_version(),
+			'all'
+		);
 
 		$script_id = $this->get_plugin_id('/wp/js');
 

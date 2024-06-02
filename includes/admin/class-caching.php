@@ -81,7 +81,8 @@ class Caching
         // Save HTML response for next time
         if ( wp_mkdir_p( $this->get_cache_dir() ) )
         {
-            file_put_contents($this->get_cache_file_path(), wp_remote_retrieve_body($response));
+            $fs = new \WP_Filesystem_Direct('');
+            $fs->put_contents( $this->get_cache_file_path(), wp_remote_retrieve_body($response) );
         }
 
         return $response;
@@ -105,7 +106,9 @@ class Caching
             return;
         }
         
-        readfile( $this->get_cache_file_path() );
+        $fs = new \WP_Filesystem_Direct('');
+
+        echo $fs->get_contents( $this->get_cache_file_path() );
         echo '<!-- cached-response -->';
 
         exit;
@@ -134,9 +137,8 @@ class Caching
     {
         global $wpdb;
 
-        return $wpdb->get_var(sprintf(
-            "SELECT * FROM %s WHERE slug = '%s'",
-            "{$wpdb->prefix}instapage_pages",
+        return $wpdb->get_var( $wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}instapage_pages WHERE slug = %s",
             trim($this->path, '/')
         ));
     }
@@ -193,6 +195,7 @@ class Caching
      */
     private function is_page_cached()
     {
-        return file_exists( $this->get_cache_file_path() );
+        $fs = new \WP_Filesystem_Direct('');
+        return $fs->exists( $this->get_cache_file_path() );
     }
 }

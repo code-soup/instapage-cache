@@ -1,53 +1,98 @@
-## Instapage Cache
+=== Instapage Cache ===
+Contributors: bobz, codesoup
+License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
+License: GPLv3 or later
+Requires at least: 6.5
+Requires PHP: 8.2
+Requires: instapage
+Stable Tag: trunk
+Tags: instapage, caching, optimization
+Tested up to: 6.5.3
 
-Updated verision of [WordPress Plugin Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
-Includes a Webpack build script and webpack-dev-server for local development.
-Integrates PHP namespacing and PSR-4 autoloader for better experience.
+Boost performance and reduce server load with Instapage Cache. This add-on for Instapage lets you easily manage and clear cache to speed up page load time.
 
-## Setup
+== Description ==
 
-Follow [Setup instructions here](https://github.com/code-soup/wordpress-plugin-boilerplate/wiki/04.-Installation)
+Boost the performance and efficiency of your Instapage sites with the Instapage Cache plugin. This add-on is designed to improve page load times and reduce server load by managing and clearing the local cache effectively. Whether you're managing a small site or a large network of pages, this plugin ensures your visitors always enjoy a fast, seamless experience.
 
-## Issues
+### Key Features
 
-Please use [Github issues](https://github.com/code-soup/wordpress-plugin-boilerplate/issues) to submit any bugs you may find.
+#### Efficient Cache Management
 
-## Documentation
+-   **Automatic Cache Handling:** Automatically cache all published Instapage pages
+-   **Easy Cache Clearing:** With just a click, clear the entire cache or specific pages to ensure your content is always up-to-date.
 
-Plugin documentation with instalation instruction and best practices can be found at [wiki page](https://github.com/code-soup/wordpress-plugin-boilerplate/wiki).
+#### Improved Performance
 
-## Features
+-   **Faster Page Loads:** By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
+-   **Reduced Server Load:** Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
 
--   Sass for stylesheets
--   Stylelint
--   ES6 with Babel for JavaScript
--   ESLint
--   [Webpack 5](https://webpack.github.io) build script for frontend and wp-admin assets
--   [Webpack dev server](https://github.com/webpack/webpack-dev-server) with live reloading and HMR
--   PSR-4 Autoloader
--   [SVG Spritemap by cascornelissen](https://github.com/cascornelissen/svg-spritemap-webpack-plugin)
+#### User-Friendly Interface
 
-## Requirements
+-   **Intuitive Settings Page:** The plugin provides a simple, easy-to-navigate settings page under the Instapage menu in your WordPress dashboard.
+-   **Easy Cache Delete:** Ability to regenerate cache for individual pages or delete all cached pages with a single click
 
-Make sure all dependencies have been installed before moving on:
+### Why Use Instapage Cache?
 
--   [WordPress](https://wordpress.org/) >= 5.0
--   [PHP](http://php.net/manual/en/install.php) >= 8.1
--   [Composer](https://getcomposer.org/download/)
--   [Node.js](http://nodejs.org/) >= 20
--   [Yarn](https://yarnpkg.com/en/docs/install)
+In today's fast-paced digital world, site speed is crucial. Slow load times can drive visitors away, affecting your site's engagement and conversion rates. Instapage Cache addresses this by ensuring your pages load quickly and efficiently, regardless of the number of visitors or the size of your site.
 
-## Coding Standards
+By implementing robust caching mechanisms, this plugin not only enhances performance but also helps in conserving server resources, making your hosting environment more sustainable and cost-effective.
 
--   `wpcs` : analyze code against the WordPress coding standards with PHP_CodeSniffer.
--   `cbf` : fix coding standards warnings/errors automatically with PHP Code Beautifier.
--   `lint` : lint PHP files against parse errors.
+### Compatibility
 
-To check a file against the WordPress coding standards or to automatically fix coding standards, simply specify the file's location:
+Instapage Cache is designed to work seamlessly with the latest versions of WordPress and Instapage, ensuring you always have access to the best caching solutions for your site.
 
--   `wpcs includes/class-init.php`
--   `cbf includes/class-init.php`
+== Installation ==
 
-#### License
+### Manual Installation
 
-This project is licensed under the [GPL license](http://www.gnu.org/licenses/gpl-3.0.txt).
+1. **Upload Plugin Files**: Upload the `instapage-local-cache` folder to the `/wp-content/plugins/` directory.
+
+2. **Activate the Plugin**: Navigate to the 'Plugins' screen in your WordPress dashboard and activate the Instapage Cache plugin.
+
+3. **Navigate to Caching Page**: After activation, go to the Instapage > Caching page in your WordPress dashboard to configure and activate the caching settings.
+
+### Installation via WordPress Admin
+
+1. **Install the Plugin**:
+
+    - Go to the 'Plugins' menu in WordPress.
+    - Click 'Add New'.
+    - Search for 'Instapage Cache'.
+    - Click 'Install Now'.
+
+2. **Activate the Plugin**:
+
+    - After installation, click 'Activate'.
+
+3. **Navigate to Caching Page**:
+    - After activation, go to the 'Instapage > Caching' page in your WordPress dashboard to configure and activate the caching settings.
+
+By following these steps, you can ensure that the Instapage Cache plugin is properly installed and configured, allowing you to manage your cache settings effectively and improve your site's performance.
+
+== Frequently Asked Questions ==
+
+= At what point are pages being cached? =
+
+Cache will be automatically created when anyone visits page for the first time.
+Every next visit will be served from cache from your server.
+
+= How can I verify cached version is being served? =
+
+If everything works correctly, you should see text: <!-- cached-response --> in source of your page
+
+= Where can I get help? =
+
+Submit any bug or feature request either to WordPress support forum or on Github repository: https://github.com/code-soup/instapage-cache/issues
+
+== Screenshots ==
+
+1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif).
+2. This is the second screen shot
+
+== Support ==
+Submit any bug or feature request either to WordPress support forum or on Github repository: https://github.com/code-soup/instapage-cache
+
+== Changelog ==
+
+== Upgrade Notice ==
