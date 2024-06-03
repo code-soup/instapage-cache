@@ -82,8 +82,6 @@ const InstapageCacheManager = () => {
 
 	return (
 		<div className="wrap">
-			<h1 className="wp-heading-inline">Instapage Cache Manager</h1>
-			<hr className="wp-header-end" />
 			<Search onSearch={handleSearch} />
 			<table className="wp-list-table widefat striped table-view-list posts">
 				<thead>

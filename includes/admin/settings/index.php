@@ -13,7 +13,7 @@ $tab = empty($_GET['tab'])
     : sanitize_title($_GET['tab']); ?>
 
 <div class="wrap">
-    <h2>Settings</h2>
+    <h2>Instapage Cache</h2>
     <form action="options.php" method="post">
 
         <div id="tabs-certify-settings">
