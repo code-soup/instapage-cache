@@ -24,9 +24,8 @@ Boost the performance and efficiency of your Instapage sites with the Instapage 
 - **Faster Page Loads:** By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
 - **Reduced Server Load:** Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
 
-#### User-Friendly Interface
-- **Intuitive Settings Page:** The plugin provides a simple, easy-to-navigate settings page under the Instapage menu in your WordPress dashboard.
-- **Easy Cache Delete:** Ability to regenerate cache for individual pages or delete all cached pages with a single click
+#### Custom User Role and Capability
+This add-on introduces a significant change to Instapage management access. Previously, only users with the Administrator role could access and manage Instapage. Now, a new custom user role, **Instapage Manager**, grants non-admin users the capability to access and manage Instapage, providing more flexibility and control..
 
 ### Why Use Instapage Cache?
 

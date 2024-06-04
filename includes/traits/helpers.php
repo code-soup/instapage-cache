@@ -8,13 +8,15 @@ defined( 'WPINC' ) || die;
 /**
  * Helper methods
  */
-trait HelpersTrait {
-
+trait HelpersTrait
+{
     private function get_url_part($url, $part = 'path')
     {
         $parsed = wp_parse_url($url);
 
-        return $parsed[ $part ];
+        return isset($parsed[ $part ])
+            ? $parsed[ $part ]
+            : '';
     }
 
     private function get_cache_dir_path( $slug ) {

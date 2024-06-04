@@ -26,9 +26,40 @@ class Settings_Page {
         $hooker       = $instance->get_hooker();
 
         $hooker->add_actions([
-        	['admin_menu', $this],
+        	['admin_menu', $this, 'admin_menu', 100],
         	['admin_init', $this],
         ]);
+
+        $hooker->add_filter( 'user_has_cap', $this, 'user_has_cap', 10, 4 );
+    }
+
+
+    /**
+     * Bypass Instapage capability checks
+     * This method includes 'manage_options' capability if caller is Instapage Class
+     * This will allow u
+     * @return [type]          [description]
+     */
+    public function user_has_cap( $allcaps, $caps, $args, $wp_user )
+    {
+        if ( in_array('manage_options', $caps) )
+        {
+            $trace = debug_backtrace();
+
+            foreach( $trace as $call )
+            {
+                if ( ! isset($call['class']) )
+                    continue;
+
+                if ( $call['function'] === 'currentUserCanManage' )
+                {
+                    // $allcaps['manage_instapage'] = 1;
+                    $allcaps['manage_options'] = 1;
+                }
+            }
+        }        
+
+        return $allcaps;
     }
 
     
@@ -37,11 +68,43 @@ class Settings_Page {
      */
     public function admin_menu()
     {
+        /**
+         * Instapage comes with manage_options capability which does not allow custom user roles
+         * This is a fix
+         */
+        if ( class_exists('InstapageCmsPluginHelper') && class_exists('InstapageCmsPluginWPConnector') )
+        {
+            // Remove original Instapage Dashboard
+            remove_menu_page('instapage_dashboard');
+
+            // Callback
+            $callback = '';
+
+            // In case user already has manage_options dashboard will be loaded twice
+            // This will prevent dashboard loading twice
+            if ( ! current_user_can('manage_options') )
+            {
+                $instawp  = new \InstapageCmsPluginWPConnector();
+                $callback = array( $instawp, 'loadPluginDashboard');
+            }
+            
+            // Re-add Instapage Dashboard with updated capability
+            add_menu_page(
+                __('Instapage: General settings'),
+                __('Instapage'),
+                'manage_instapage',
+                'instapage_dashboard',
+                $callback,
+                \InstapageCmsPluginHelper::getMenuIcon(),
+                31
+           );
+        }
+
         add_submenu_page(
 	        'instapage_dashboard',
 	        'Cache Settings',
 	        'Caching',
-	        'manage_options',
+	        'manage_instapage',
 	        'instapage-cache',
 	        array( &$this, 'render_settings_page'),
 	    );
@@ -64,14 +127,14 @@ class Settings_Page {
          */
         $this->tabs = array(
             array(
-                'tab_id'      => 'general',
-                'tab_title'   => 'General',
+                'tab_id'      => 'caching',
+                'tab_title'   => 'Caching',
                 'option_page' => $option_page,
                 'option_name' => $option_name,
             ),
             array(
-                'tab_id'      => 'caching',
-                'tab_title'   => 'Caching',
+                'tab_id'      => 'general',
+                'tab_title'   => 'General',
                 'option_page' => $option_page,
                 'option_name' => $option_name,
             ),

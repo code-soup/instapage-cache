@@ -131,15 +131,13 @@ class APIController {
     /**
      * Validate user permissions when trying to deploy from docker
      */
-    public function get_items_permissions_check( \WP_REST_Request $request ) {
-
-        return true;
-
+    public function get_items_permissions_check( \WP_REST_Request $request )
+    {
         $wp_user = wp_get_current_user();
 
         if ( ! empty($wp_user) )
         {
-            return $wp_user->has_cap('manage_snapshots');
+            return $wp_user->has_cap('manage_instapage');
         }
 
         return false;

@@ -98,4 +98,29 @@ class Init {
         $rest = new APIController();
         $rest->register_routes();
     }
+
+
+    /**
+	 * - Generate user roles and capabilities
+	 * - Add custom caps to admin
+	 */
+	public static function capabilities_setup() {
+
+		// Role for Compliance Manager
+        $caps = array(
+            'manage_instapage',
+        );
+
+        add_role('instapage_manager', 'Instapage Manager', $caps);
+
+        // Grant Compliance Manager capabilities to Administrator
+        $admin_role = get_role('administrator');
+
+        if ($admin_role)
+        {
+            foreach ($caps as $cap) {
+                $admin_role->add_cap($cap);
+            }
+        }
+	}
 }

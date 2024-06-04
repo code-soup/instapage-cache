@@ -9,7 +9,7 @@ if ( empty($wp_settings_sections['codesoup_ilc_settigns_page']) )
     return;
 
 $tab = empty($_GET['tab'])
-    ? 'general'
+    ? 'caching'
     : sanitize_title($_GET['tab']); ?>
 
 <div class="wrap">
