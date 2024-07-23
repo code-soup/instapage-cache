@@ -17,6 +17,9 @@ defined( 'WPINC' ) || die;
 class Deactivator {
 
     public static function deactivate() {
-        // Put code that you want to run on deactivation in here.
+        /**
+         * Disable Cron
+         */
+        \CodeSoup\InstapageCache\Admin\Init::cron_clear_cache('disable');
     }
 }

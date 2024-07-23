@@ -11,4 +11,11 @@ return array(
 		'type'        => 'checkbox',
 		'value'       => 'checked',
 	),
+	array(
+		'id'          => 'cache-delete-interval',
+		'label'       => 'Auto Clear Cache Every:',
+		'description' => 'Minutes',
+		'type'        => 'number',
+		'value'       => 60,
+	),
 );

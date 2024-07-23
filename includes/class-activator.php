@@ -17,5 +17,11 @@ class Activator {
     public static function activate() {
         // Put code that you want to run on activation in here.
         \CodeSoup\InstapageCache\Admin\Init::capabilities_setup();
+
+
+        /**
+         * Enable Cron
+         */
+        \CodeSoup\InstapageCache\Admin\Init::cron_clear_cache('enable');
     }
 }

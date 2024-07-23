@@ -46,6 +46,10 @@ class Init {
 			['rest_api_init', $this],
 		]);
 
+		$hooker->add_filters([
+			['cron_schedules', $this]
+        ]);
+
 		new Settings_Page;
 	}
 
@@ -122,5 +126,46 @@ class Init {
                 $admin_role->add_cap($cap);
             }
         }
+	}
+
+
+	public function cron_schedules( $schedules )
+	{
+        $schedules['ic_every_four_hours'] = array(
+            'interval' => 14400,
+            'display'  => __('Every 4 Hours')
+        );
+
+        return $schedules;
+	}
+
+
+	/**
+     * Enable Cron
+     */
+	public static function cron_clear_cache( $action = 'disable' )
+	{
+		$name = 'instapage_cache_autocleanup';
+
+		switch ($action)
+		{
+			case 'enable':
+
+		        if (!wp_next_scheduled($name)) {
+		            wp_schedule_event(time(), 'ic_every_four_hours', $name);
+		        }
+
+			break;
+			
+			case 'disable':
+				
+				$timestamp = wp_next_scheduled($name);
+			    
+			    if ($timestamp)
+			    {
+			        wp_unschedule_event($timestamp, $name);
+			    }
+			break;
+		}
 	}
 }

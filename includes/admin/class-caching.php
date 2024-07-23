@@ -29,9 +29,20 @@ class Caching
             return;
         }
 
-        add_filter( 'pre_http_request', [$this, 'maybe_block_request'], 10, 3 );
-        add_filter( 'http_response', [$this, 'cache_instapage_response'], 10, 3 );
-        add_filter( 'pre_get_posts', [$this, 'maybe_serve_cached_response'] );
+        $instance = \CodeSoup\InstapageCache\Init::get_instance();
+        $hooker   = $instance->get_hooker();
+
+        $hooker->add_filters([
+            ['pre_http_request',$this, 'maybe_block_request', 10, 3],
+            ['http_response', $this, 'cache_instapage_response', 10, 3],
+            ['pre_get_posts', $this, 'maybe_serve_cached_response'],
+        ]);
+        
+
+        $hooker->add_actions([
+            ['instapage_cache_autocleanup', $this, 'delete_instapage_cache']
+        ]);
+
     }
 
 
@@ -109,9 +120,20 @@ class Caching
         $fs = new \WP_Filesystem_Direct('');
 
         echo $fs->get_contents( $this->get_cache_file_path() );
-        echo '<!-- cached-response -->';
+        printf(
+            '<!-- cached-response %s -->',
+            date('Y-m-d h:i')
+        );
 
         exit;
+    }
+
+
+
+    public function delete_instapage_cache()
+    {
+        $fs  = new \WP_Filesystem_Direct('');
+        $fs->rmdir( $this->get_constant('CACHE_BASE_DIR'), true );
     }
 
 
