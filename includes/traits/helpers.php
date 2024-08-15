@@ -169,8 +169,59 @@ trait HelpersTrait
     }
 
 
-
+    /**
+     * Get plugin option
+     * @param  [type] $name    [description]
+     * @param  [type] $section [description]
+     * @return [type]          [description]
+     */
     private function get_option( $name, $section ) {
         return Settings_Page::get_option($name, $section);
+    }
+
+
+    /**
+     * Get List of all disabled pages
+     */
+    private function get_disabled_pages()
+    {
+        return json_decode( get_option('codesoup_ilc_cache_disabled', wp_json_encode( array() )), true );
+    }
+
+
+    private function is_page_caching_disabled( int $page_id, $pages = array() )
+    {
+        return ( array_search($page_id, $this->get_disabled_pages()) !== false );
+    }
+
+    /**
+     * Disable caching
+     */
+    private function disable_caching( int $page_id )
+    {
+        $pages   = $this->get_disabled_pages();
+        $pages[] = $page_id;
+
+        update_option( 'codesoup_ilc_cache_disabled', wp_json_encode( array_unique($pages) ), false );
+
+        return $pages;
+    }
+
+
+    /**
+     * Enable caching
+     */
+    private function enable_caching( int $page_id )
+    {
+        $pages = $this->get_disabled_pages();
+        $key   = array_search($page_id, $pages);
+
+        if ($key !== false) {
+            unset($pages[$key]);
+        }
+
+        update_option( 'codesoup_ilc_cache_disabled', wp_json_encode( array_unique($pages) ), false );
+
+        return $pages;
     }
 }

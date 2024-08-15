@@ -25,7 +25,8 @@ class APIController {
                 array(
                     'methods'             => \WP_REST_Server::READABLE,
                     'callback'            => array($this, 'get_items'),
-                    'permission_callback' => array($this, 'get_items_permissions_check'),
+                    'permission_callback' => '__return_true',
+                    // 'permission_callback' => array($this, 'get_items_permissions_check'),
                 ),
             )
         );
@@ -41,6 +42,19 @@ class APIController {
                 ),
             )
         );
+
+        register_rest_route(
+            'instapage-cache/v1',
+            '/toggle',
+            array(
+                array(
+                    'methods'             => \WP_REST_Server::CREATABLE,
+                    'callback'            => array($this, 'toggle_item'),
+                    'permission_callback' => '__return_true',
+                    // 'permission_callback' => array($this, 'get_items_permissions_check'),
+                ),
+            )
+        );
     }
 
 
@@ -50,9 +64,10 @@ class APIController {
     {
         // Query args
         $search   = $request->get_param('search');
-        $paged    = $request->get_param('page');
-        $per_page = $request->get_param('per_page');
+        $paged    = $request->get_param('page') ? $request->get_param('page') : 1;
+        $per_page = $request->get_param('per_page') ? $request->get_param('per_page') : 15;
         $offset   = intval( ($paged - 1) * $per_page );
+        $disabled = $this->get_disabled_pages();
 
         global $wpdb;
 
@@ -73,20 +88,20 @@ class APIController {
         /**
          * Return
          */
+        $fs    = new \WP_Filesystem_Direct('');
         $items = array();
 
         foreach( $qry as $row )
         {
-
-            $fs   = new \WP_Filesystem_Direct('');
             $file = sprintf(
                 '%s/%s/index.html',
                 $this->get_constant('CACHE_BASE_DIR'),
                 trim($row['slug'], '/')
             );
 
-            $new           = $row;
-            $new['cached'] = intval( $fs->exists( $file ) );
+            $new                   = $row;
+            $new['cached']         = intval( $fs->exists( $file ) );
+            $new['cache_disabled'] = ( array_search($row['id'], $disabled) !== false );
 
             $items[] = $new;
         }
@@ -102,7 +117,11 @@ class APIController {
     }
 
 
-
+    /**
+     * Delete cache for single page
+     * This simply deletes folder of the page
+     * On each new request cache is served in case folder exists
+     */
     public function delete_item( \WP_REST_Request $request )
     {
         // Query args
@@ -124,6 +143,39 @@ class APIController {
         
         return rest_ensure_response([
             'deleted' => $del,
+        ]);
+    }
+
+
+    /**
+     * Toggle Caching on/off
+     */
+    public function toggle_item( \WP_REST_Request $request )
+    {
+        $id   = $request->get_param('id');
+        $slug = $request->get_param('slug');
+
+        switch ( $request->get_param('action') ) {
+            case 'disable':
+                $this->disable_caching( intval($id) );
+
+                /**
+                 * Delete existing cache
+                 */
+                if ( ! empty($slug) )
+                {
+                    $fs  = new \WP_Filesystem_Direct('');
+                    $del = $fs->rmdir( $this->get_cache_dir_path( $slug ), true );
+                }
+            break;
+            
+            case 'enable':
+                $this->enable_caching( intval($id) );
+            break;
+        }
+
+        return rest_ensure_response([
+            'action' => $request->get_param('action'),
         ]);
     }
 
@@ -151,6 +203,13 @@ class APIController {
      */
     public function get_collection_params() {
         return array(
+            'id'     => array(
+                'description'       => 'Current item id',
+                'type'              => 'integer',
+                'min'               => 1,
+                'default'           => 1,
+                'sanitize_callback' => 'absint',
+            ),
             'slug'   => array(
                 'description'       => 'Page Slug',
                 'type'              => 'string',
