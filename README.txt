@@ -6,7 +6,7 @@ Requires at least: 4.0
 Requires PHP: 8.2
 Stable Tag: trunk
 Tags: instapage, caching, optimization
-Tested up to: 4.8
+Tested up to: 6.5
 
 Boost performance and reduce server load with Instapage Cache. This add-on for Instapage lets you easily manage and clear cache to speed up page load time.
 
