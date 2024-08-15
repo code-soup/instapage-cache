@@ -28,6 +28,7 @@ class Settings_Page {
         $hooker->add_actions([
         	['admin_menu', $this, 'admin_menu', 100],
         	['admin_init', $this],
+            ['admin_notices', $this],
         ]);
 
         $hooker->add_filter( 'user_has_cap', $this, 'user_has_cap', 10, 4 );
@@ -108,6 +109,21 @@ class Settings_Page {
 	        'instapage-cache',
 	        array( &$this, 'render_settings_page'),
 	    );
+    }
+
+
+    public function admin_notices() {
+
+        $page   = isset( $_GET['page'] ) ? $_GET['page'] : false;
+        $status = self::get_option( 'instapage_cache_enabled', 'general' );
+
+        if ( 'instapage-cache' === $page && empty($status) )
+        {
+            printf(
+                '<div class="notice notice-warning is-dismissible"><p>%s</p></div>',
+                'Instapage Caching is disabled at the moment.'
+            );
+        }
     }
 
 

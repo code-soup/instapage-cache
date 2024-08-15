@@ -6,13 +6,14 @@ Boost the performance and efficiency of your WordPress website with the Instapag
 
 **Efficient Cache Management**
 
--   **Automatic Cache Handling:** Automatically cache all published Instapage pages
--   **Easy Cache Clearing:** With just a click, clear the entire cache or specific pages to ensure your content is always up-to-date.
+-   Automatically cache all published Instapage pages
+-   With just a click, clear the entire cache or specific pages to ensure your content is always up-to-date.
+-   Disable caching on per page basis
 
 **Improved Performance**
 
--   **Faster Page Loads:** By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
--   **Reduced Server Load:** Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
+-   By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
+-   Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
 
 **Custom User Role and Capability**
 

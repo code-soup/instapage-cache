@@ -55,11 +55,32 @@ const Loop = ({ items, onPageDelete }) => {
 						</td>
 						<td>{item.time}</td>
 						<td>{item.cached === 0 ? "No" : "Yes"}</td>
+						<td>{item.cache_disabled ? "Disabled" : "Enabled"}</td>
 						<td className="td-right">
 							<button
-								disabled={item.cached === 0}
+								className="button button-primary"
+								data-item-id={item.id}
+								data-item-slug={item.slug}
+								data-action={
+									item.cache_disabled ? "enable" : "disable"
+								}
+								onClick={(event) =>
+									handleClick(event, event.currentTarget)
+								}
+							>
+								{item.cache_disabled
+									? "Enable Caching"
+									: "Disable Caching"}
+							</button>
+						</td>
+						<td className="td-right">
+							<button
+								disabled={
+									item.cached === 0 || item.cache_disabled
+								}
 								className="button button-primary"
 								data-item-slug={item.slug}
+								data-action="delete"
 								onClick={(event) =>
 									handleClick(event, event.currentTarget)
 								}

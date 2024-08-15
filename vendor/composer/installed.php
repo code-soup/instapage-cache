@@ -3,7 +3,7 @@
         'name' => 'codesoup/wppb',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'd9e0042d230736c1ffeafe752eef01fd85e33edc',
+        'reference' => '4347e6c66a5287118b0f7eb1e8ce73dc25864c75',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'codesoup/wppb' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'd9e0042d230736c1ffeafe752eef01fd85e33edc',
+            'reference' => '4347e6c66a5287118b0f7eb1e8ce73dc25864c75',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

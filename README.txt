@@ -6,7 +6,7 @@ Requires at least: 4.0
 Requires PHP: 8.2
 Stable Tag: trunk
 Tags: instapage, caching, optimization
-Tested up to: 4.8
+Tested up to: 6.5
 
 Boost performance and reduce server load with Instapage Cache. This add-on for Instapage lets you easily manage and clear cache to speed up page load time.
 
@@ -17,12 +17,13 @@ Boost the performance and efficiency of your Instapage sites with the Instapage 
 ### Key Features
 
 #### Efficient Cache Management
-- **Automatic Cache Handling:** Automatically cache all published Instapage pages
-- **Easy Cache Clearing:** With just a click, clear the entire cache or specific pages to ensure your content is always up-to-date.
+- Automatically cache all published Instapage pages
+- With just a click, clear the entire cache or specific pages to ensure your content is always up-to-date.
+- Disable caching on per page basis
 
 #### Improved Performance
-- **Faster Page Loads:** By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
-- **Reduced Server Load:** Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
+- By serving cached content, the plugin dramatically reduces the time it takes for your pages to load, enhancing user experience.
+- Offload server processing by delivering cached pages, making your site more resilient under heavy traffic.
 
 #### Custom User Role and Capability
 This add-on introduces a significant change to Instapage management access. Previously, only users with the Administrator role could access and manage Instapage. Now, a new custom user role, **Instapage Manager**, grants non-admin users the capability to access and manage Instapage, providing more flexibility and control..

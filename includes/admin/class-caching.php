@@ -113,6 +113,11 @@ class Caching
 
         $this->set_path( $_SERVER['REQUEST_URI'] );
 
+        // Manually disabled for this page
+        if ( $this->is_page_caching_disabled( intval($this->get_page_id()) ) ) {
+            return;
+        }
+
         if ( ! $this->is_instapage_published() || ! $this->is_page_cached() ) {
             return;
         }

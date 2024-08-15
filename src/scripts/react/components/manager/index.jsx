@@ -56,11 +56,30 @@ const InstapageCacheManager = () => {
 	 */
 	const handleClick = (event, anchorElement) => {
 		event.preventDefault();
-		onCacheDelete(anchorElement.getAttribute("data-item-slug")).then(() => {
-			updateItems();
-		});
+
+		switch (anchorElement.getAttribute("data-action")) {
+			case "delete":
+				onCacheDelete(
+					anchorElement.getAttribute("data-item-slug"),
+				).then(() => {
+					updateItems();
+				});
+				break;
+			default:
+				onCacheToggle(
+					anchorElement.getAttribute("data-item-id"),
+					anchorElement.getAttribute("data-item-slug"),
+					anchorElement.getAttribute("data-action"),
+				).then(() => {
+					updateItems();
+				});
+				break;
+		}
 	};
 
+	/**
+	 * Delete single item call
+	 */
 	const onCacheDelete = (itemSlug) => {
 		apiFetch.use(
 			apiFetch.createRootURLMiddleware(window.codesoup_ilc.root),
@@ -69,6 +88,30 @@ const InstapageCacheManager = () => {
 		return apiFetch({
 			path: addQueryArgs("/instapage-cache/v1/delete", {
 				slug: itemSlug,
+			}),
+			method: "POST",
+			credentials: "same-origin",
+			headers: {
+				"Content-Type": "application/json",
+				"Accept": "application/json",
+				"X-WP-Nonce": window.codesoup_ilc.nonce,
+			},
+		});
+	};
+
+	/**
+	 * Toggle single item call
+	 */
+	const onCacheToggle = (itemId, itemSlug, itemAction) => {
+		apiFetch.use(
+			apiFetch.createRootURLMiddleware(window.codesoup_ilc.root),
+		);
+
+		return apiFetch({
+			path: addQueryArgs("/instapage-cache/v1/toggle", {
+				id: itemId,
+				slug: itemSlug,
+				action: itemAction,
 			}),
 			method: "POST",
 			credentials: "same-origin",
@@ -90,6 +133,8 @@ const InstapageCacheManager = () => {
 						<th>Page URL</th>
 						<th>Published On</th>
 						<th>Cached</th>
+						<th>Serve Cached Response</th>
+						<th className="td-right">Caching On/Off</th>
 						<th className="td-right">
 							<button
 								className="button button-primary"
