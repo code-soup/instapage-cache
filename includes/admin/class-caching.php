@@ -33,7 +33,7 @@ class Caching
         $hooker   = $instance->get_hooker();
 
         $hooker->add_filters([
-            ['pre_http_request',$this, 'maybe_block_request', 10, 3],
+            ['pre_http_request', $this, 'maybe_block_request', 10, 3],
             ['http_response', $this, 'cache_instapage_response', 10, 3],
             ['pre_get_posts', $this, 'maybe_serve_cached_response'],
         ]);
@@ -89,12 +89,19 @@ class Caching
         // Update path
         $this->set_path( $url );
 
+        $body = do_shortcode( wp_remote_retrieve_body($response) );
+
         // Save HTML response for next time
         if ( wp_mkdir_p( $this->get_cache_dir() ) )
         {
             $fs = new \WP_Filesystem_Direct('');
-            $fs->put_contents( $this->get_cache_file_path(), wp_remote_retrieve_body($response) );
+            $fs->put_contents( $this->get_cache_file_path(), $body );
         }
+
+        /**
+         * Parse Shortcodes in response
+         */
+        $response['body'] = $body;
 
         return $response;
     }
@@ -124,9 +131,9 @@ class Caching
         
         $fs = new \WP_Filesystem_Direct('');
 
-        echo $fs->get_contents( $this->get_cache_file_path() );
+        echo do_shortcode( $fs->get_contents( $this->get_cache_file_path() ) );
         printf(
-            '<!-- cached-response %s -->',
+            '<!-- instapage-cache-plugin-cached-response %s -->',
             date('Y-m-d h:i')
         );
 
