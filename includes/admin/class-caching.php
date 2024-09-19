@@ -89,7 +89,7 @@ class Caching
         // Update path
         $this->set_path( $url );
 
-        $body = do_shortcode( wp_remote_retrieve_body($response) );
+        $body = wp_remote_retrieve_body($response);
 
         // Save HTML response for next time
         if ( wp_mkdir_p( $this->get_cache_dir() ) )
@@ -101,7 +101,7 @@ class Caching
         /**
          * Parse Shortcodes in response
          */
-        $response['body'] = $body;
+        $response['body'] = do_shortcode( $body );
 
         return $response;
     }
