@@ -1,28 +1,41 @@
-const TerserPlugin = require('terser-webpack-plugin');
+/**
+ * Webpack optimization configuration
+ */
 
-function normalizeName(name) {
-    return name
-        .replace(/node_modules/g, 'nodemodules')
-        .replace(/[\-_.|]+/g, ' ')
-        .replace(/\b(nodemodules|js|modules|es)\b/g, '')
-        .trim()
-        .replace(/ +/g, '-');
-}
+import TerserPlugin from 'terser-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 
-module.exports = {
+export default (config, { isProduction }) => ({
+    // Enable tree shaking and module concatenation in production
+    usedExports: true,
+    concatenateModules: isProduction,
+    sideEffects: true,
+
+    // Set chunk and module IDs to be deterministic in production for long-term caching
+    chunkIds: isProduction ? 'deterministic' : 'named',
+    moduleIds: isProduction ? 'deterministic' : 'named',
+
+    // Extract webpack runtime into a single chunk for better caching
+    runtimeChunk: 'single',
+    
+    // Code splitting configuration
     splitChunks: {
-        chunks: 'async',
-        name(module, chunks, cacheGroupKey) {
-            const moduleFileName = module
-                .identifier()
-                .split('/')
-                .reduceRight((item) => item);
-            return (
-                'vendor/' + normalizeName(moduleFileName.replace(/[\/]/g, '-'))
-            );
+        chunks: 'all',
+        cacheGroups: {
+            default: false,
+            vendors: false, // Turn off default behavior
+            // Group all vendor code from node_modules into a single chunk
+			vendor: {
+				name: 'vendor-libs',
+				test: /[\\/]node_modules[\\/]/,
+				chunks: 'all',
+				enforce: true,
+			},
         },
     },
-    minimize: true,
+    
+    // Minification configuration (production only)
+    minimize: isProduction,
     minimizer: [
         new TerserPlugin({
             parallel: true,
@@ -31,5 +44,6 @@ module.exports = {
                 safari10: true,
             },
         }),
+        new CssMinimizerPlugin(),
     ],
-};
+});

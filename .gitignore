@@ -19,6 +19,8 @@ Thumbs.db
 .project
 .settings
 .tmproj
+.vscode
+.cursor
 *.esproj
 ._*
 .Spotlight-V100
@@ -37,17 +39,22 @@ dwsync.xml
 .komodotools
 
 # Folders to ignore
-.hg
-.svn
-.CVS
-intermediate
-.idea
-cache
-bower_components
-node_modules
+_local
+#_old
+_remote
 _test-src
-_svn
 _zip
+.cursor
+.CVS
+.hg
+.idea
+.svn
+bower_components
+cache
+dist
+intermediate
+node_modules
+vendor
 
 # Logs
 logs
@@ -108,4 +115,12 @@ package-lock.json
 
 # dotenv environment variables file
 .env
+.env.*
 .env.local
+
+# PHP CodeSniffer cache
+.phpcs.cache
+
+# Distribution archives
+*.zip
+*.tgz

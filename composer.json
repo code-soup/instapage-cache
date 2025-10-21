@@ -1,11 +1,12 @@
 {
-	"name": "codesoup/wppb",
-	"description": "WordPress Plugin Boilerplate",
-	"homepage": "https://github.com/code-soup/wordpress-plugin-boilerplate",
+	"name": "codesoup/instapage-cache",
+    "version": "1.0.0",
+	"description": "Boost performance and reduce server load with Instapage Cache. This add-on for Instapage lets you easily manage and clear cache to speed up page load time.",
+	"homepage": "https://github.com/code-soup/instapage-cache",
 	"type": "wordpress-plugin",
 	"license": "GPL-3.0",
 	"support": {
-		"issues": "https://github.com/code-soup/wordpress-plugin-boilerplate/issues"
+		"issues": "https://github.com/code-soup/instapage-cache/issues"
 	},
 	"authors": [
 		{
@@ -26,14 +27,22 @@
 		"wordpress plugin boilerplate"
 	],
 	"autoload": {
-		"classmap": [
-			"includes/"
-		]
+		"psr-4": {
+			"CodeSoup\\InstapageCache\\Core\\": "includes/core/",
+			"CodeSoup\\InstapageCache\\Admin\\": "includes/admin/",
+			"CodeSoup\\InstapageCache\\Frontend\\": "includes/frontend/",
+			"CodeSoup\\InstapageCache\\Providers\\": "includes/providers/",
+			"CodeSoup\\InstapageCache\\Abstracts\\": "includes/abstracts/",
+			"CodeSoup\\InstapageCache\\Interfaces\\": "includes/interfaces/",
+			"CodeSoup\\InstapageCache\\Traits\\": "includes/traits/",
+			"CodeSoup\\InstapageCache\\": "includes/"
+		}
 	},
 	"require": {
-		"php": ">=7.4.0",
-		"composer/installers": "^2.2.0",
-		"vlucas/phpdotenv": "^5.5"
+		"php": ">=8.1.0",
+		"composer/installers": "^2.3.0",
+		"vlucas/phpdotenv": "^5.6",
+		"psr/container": "^2.0"
 	},
 	"require-dev": {
 		"wp-coding-standards/wpcs": "*",

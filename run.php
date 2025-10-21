@@ -1,34 +1,47 @@
 <?php
+/**
+ * Plugin main file.
+ *
+ * @package CodeSoup\InstapageCache
+ */
 
-namespace CodeSoup;
+namespace CodeSoup\InstapageCache;
 
 // If this file is called directly, abort.
-defined('WPINC') || die;
+defined( 'ABSPATH' ) || die;
 
-// Autoload all classes via composer.
-require "vendor/autoload.php";
+// Load composer autoloader for dependencies.
+require 'vendor/autoload.php';
+
+use CodeSoup\InstapageCache\Core\Plugin;
 
 /**
- * Make main plugin class available via global function call.
+ * Begins execution of the plugin.
  *
- * @since    1.0.0
+ * @return Plugin
  */
-function plugin_instance() {
+function plugin(): Plugin {
+	static $instance = null;
 
-    return \CodeSoup\InstapageCache\Init::get_instance();
+	if ( is_null( $instance ) ) {
+		$config = array(
+			'MIN_WP_VERSION_SUPPORT_TERMS' => '6.0',
+			'MIN_WP_VERSION'               => '6.0',
+			'MIN_PHP_VERSION'              => '8.1',
+			'MIN_MYSQL_VERSION'            => '',
+			'PLUGIN_PREFIX'                => 'codesoup_ilc',
+			'PLUGIN_NAME'                  => 'Instapage Cache',
+			'PLUGIN_VERSION'               => '1.0.0',
+			'PLUGIN_TEXTDOMAIN'            => 'instapage-cache',
+			'ENVIRONMENT'                  => \wp_get_environment_type(),
+		);
+
+		// Pass the main plugin file path and config to the instance method.
+		$instance = Plugin::instance( __FILE__, $config );
+	}
+
+	return $instance;
 }
 
-// Init plugin
-$plugin = plugin_instance();
-$plugin->set_constants([
-    'MIN_WP_VERSION_SUPPORT_TERMS' => '6.0',
-    'MIN_WP_VERSION'               => '6.0',
-    'MIN_PHP_VERSION'              => '8.2',
-    'MIN_MYSQL_VERSION'            => '',
-    'PLUGIN_PREFIX'                => 'codesoup_ilc_',
-    'PLUGIN_NAME'                  => 'Instapage Local Cache',
-    'PLUGIN_VERSION'               => '0.0.1',
-    'CACHE_BASE_DIR'               => WP_CONTENT_DIR . '/instapage-cache',
-]);
-
-$plugin->init();
+// Get the plugin running.
+plugin()->run();
