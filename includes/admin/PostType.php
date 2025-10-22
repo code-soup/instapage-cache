@@ -39,13 +39,18 @@ class PostType {
 	 */
 	public function init_menu_hooks(): void {
 		$hooker = plugin()->get( 'hooker' );
-		$hooker->add_filter( 'parent_file', $this, 'set_parent_menu_for_taxonomy' );
-		$hooker->add_filter( 'submenu_file', $this, 'set_submenu_file_for_taxonomy' );
-		$hooker->add_filter( 'manage_' . self::POST_TYPE . '_posts_columns', $this, 'add_taxonomy_column' );
-		$hooker->add_action( 'manage_' . self::POST_TYPE . '_posts_custom_column', $this, 'render_taxonomy_column', 10, 2 );
-		$hooker->add_action( 'restrict_manage_posts', $this, 'add_taxonomy_filter' );
-		$hooker->add_action( 'bulk_edit_custom_box', $this, 'render_bulk_edit_fields', 10, 2 );
-		$hooker->add_action( 'save_post_' . self::POST_TYPE, $this, 'save_bulk_edit_fields' );
+
+		$hooker->add_filters([
+			array( 'admin_menu', $this, 'register_menu_page', 20 ),
+			array( 'parent_file', $this, 'set_parent_menu_for_taxonomy' ),
+			array( 'submenu_file', $this, 'set_submenu_file_for_taxonomy' ),
+			array( 'months_dropdown_results', '__return_empty_array' ),
+			array( 'manage_' . self::POST_TYPE . '_posts_columns', $this, 'manage_columns' ),
+		]);
+
+		$hooker->add_actions([
+			array( 'restrict_manage_posts', $this, 'add_taxonomy_filter' ),
+		]);
 	}
 
 	/**
@@ -54,6 +59,27 @@ class PostType {
 	public function register(): void {
 		$this->register_post_type();
 		$this->register_taxonomy();
+	}
+
+	/**
+	 * Register the settings menu page.
+	 */
+	public function register_menu_page(): void {
+		add_submenu_page(
+			'instapage_dashboard',
+			__( 'Categories', 'instapage-cache' ),
+			__( 'Categories', 'instapage-cache' ),
+			'manage_instapage_cache',
+			'edit-tags.php?taxonomy=' . self::TAXONOMY . '&post_type=' . self::POST_TYPE,
+			''
+		);
+	}
+
+	public function manage_columns( $columns ) {
+
+		unset( $columns['date'] );
+
+		return $columns;
 	}
 
 	/**
@@ -92,10 +118,14 @@ class PostType {
 			'public'             => false,
 			'publicly_queryable' => false,
 			'show_ui'            => true,
-			'show_in_menu'       => 'instapage_dashboard', // Integrate with Instapage menu
+			'show_in_menu'       => 'instapage_dashboard',
 			'query_var'          => true,
 			'rewrite'            => false,
 			'capability_type'    => 'instapage_cache',
+			'capabilities' => array(
+				'create_instapage_cache' => false,
+				'create_instapage_caches' => false,
+			),
 			'map_meta_cap'       => false,
 			'has_archive'        => false,
 			'hierarchical'       => false,
@@ -106,6 +136,12 @@ class PostType {
 		);
 
 		register_post_type( self::POST_TYPE, $args );
+
+		/**
+		 * Hides 'Add new' button
+		 */
+		global $wp_post_types;
+    	$wp_post_types['cs_instapage_cache']->cap->create_posts = 'do_not_allow';
 	}
 
 	/**
@@ -113,26 +149,26 @@ class PostType {
 	 */
 	private function register_taxonomy(): void {
 		$labels = array(
-			'name'                       => _x( 'Cache Categories', 'Taxonomy General Name', 'instapage-cache' ),
-			'singular_name'              => _x( 'Cache Category', 'Taxonomy Singular Name', 'instapage-cache' ),
-			'menu_name'                  => __( 'Cache Categories', 'instapage-cache' ),
-			'all_items'                  => __( 'All Cache Categories', 'instapage-cache' ),
-			'parent_item'                => __( 'Parent Cache Category', 'instapage-cache' ),
-			'parent_item_colon'          => __( 'Parent Cache Category:', 'instapage-cache' ),
-			'new_item_name'              => __( 'New Cache Category Name', 'instapage-cache' ),
-			'add_new_item'               => __( 'Add New Cache Category', 'instapage-cache' ),
-			'edit_item'                  => __( 'Edit Cache Category', 'instapage-cache' ),
-			'update_item'                => __( 'Update Cache Category', 'instapage-cache' ),
-			'view_item'                  => __( 'View Cache Category', 'instapage-cache' ),
-			'separate_items_with_commas' => __( 'Separate cache categories with commas', 'instapage-cache' ),
-			'add_or_remove_items'        => __( 'Add or remove cache categories', 'instapage-cache' ),
+			'name'                       => _x( 'Categories', 'Taxonomy General Name', 'instapage-cache' ),
+			'singular_name'              => _x( 'Category', 'Taxonomy Singular Name', 'instapage-cache' ),
+			'menu_name'                  => __( 'Categories', 'instapage-cache' ),
+			'all_items'                  => __( 'All Categories', 'instapage-cache' ),
+			'parent_item'                => __( 'Parent Category', 'instapage-cache' ),
+			'parent_item_colon'          => __( 'Parent Category:', 'instapage-cache' ),
+			'new_item_name'              => __( 'New Category Name', 'instapage-cache' ),
+			'add_new_item'               => __( 'Add New Category', 'instapage-cache' ),
+			'edit_item'                  => __( 'Edit Category', 'instapage-cache' ),
+			'update_item'                => __( 'Update Category', 'instapage-cache' ),
+			'view_item'                  => __( 'View Category', 'instapage-cache' ),
+			'separate_items_with_commas' => __( 'Separate categories with commas', 'instapage-cache' ),
+			'add_or_remove_items'        => __( 'Add or remove categories', 'instapage-cache' ),
 			'choose_from_most_used'      => __( 'Choose from the most used', 'instapage-cache' ),
-			'popular_items'              => __( 'Popular Cache Categories', 'instapage-cache' ),
-			'search_items'               => __( 'Search Cache Categories', 'instapage-cache' ),
+			'popular_items'              => __( 'Popular Categories', 'instapage-cache' ),
+			'search_items'               => __( 'Search Categories', 'instapage-cache' ),
 			'not_found'                  => __( 'Not Found', 'instapage-cache' ),
-			'no_terms'                   => __( 'No cache categories', 'instapage-cache' ),
-			'items_list'                 => __( 'Cache categories list', 'instapage-cache' ),
-			'items_list_navigation'      => __( 'Cache categories list navigation', 'instapage-cache' ),
+			'no_terms'                   => __( 'No categories', 'instapage-cache' ),
+			'items_list'                 => __( 'Categories list', 'instapage-cache' ),
+			'items_list_navigation'      => __( 'Categories list navigation', 'instapage-cache' ),
 		);
 
 		$args = array(
@@ -165,7 +201,7 @@ class PostType {
 	public function set_parent_menu_for_taxonomy( string $parent_file ): string {
 		global $pagenow;
 
-		if ( 'edit-tags.php' === $pagenow && isset( $_GET['taxonomy'] ) && self::TAXONOMY === sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) ) {
+		if ( strpos( $parent_file, 'cs_instapage_cache_cat' ) !== false || strpos( $parent_file, 'cs_instapage_cache' ) !== false ) {
 			$parent_file = 'instapage_dashboard';
 		}
 
@@ -176,13 +212,20 @@ class PostType {
 	 * Set submenu file for taxonomy pages.
 	 *
 	 * @param string $submenu_file The submenu file.
-	 * @return string
+	 * @return string|null
 	 */
-	public function set_submenu_file_for_taxonomy( string $submenu_file ): string {
+	public function set_submenu_file_for_taxonomy( string|null $submenu_file ): string|null {
 		global $pagenow;
 
-		if ( 'edit-tags.php' === $pagenow && isset( $_GET['taxonomy'] ) && self::TAXONOMY === sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) ) {
-			$submenu_file = 'edit-tags.php?taxonomy=' . self::TAXONOMY . '&post_type=' . self::POST_TYPE;
+		if ( empty ($submenu_file) )
+			return $submenu_file; 
+
+		// Mark category active when editing single term
+		if (
+			! empty( $_GET['tag_ID'] )
+			&& ( strpos( $submenu_file, 'cs_instapage_cache_cat' ) !== false || strpos( $submenu_file, 'cs_instapage_cache' ) !== false )
+			) {
+			$submenu_file = 'edit-tags.php?taxonomy=cs_instapage_cache_cat&amp;post_type=cs_instapage_cache';
 		}
 
 		return $submenu_file;
@@ -215,56 +258,6 @@ class PostType {
 		}
 	}
 
-	/**
-	 * Add taxonomy column to post list.
-	 *
-	 * @param array $columns Columns.
-	 * @return array
-	 */
-	public function add_taxonomy_column( array $columns ): array {
-		$new_columns = array();
-
-		foreach ( $columns as $key => $value ) {
-			$new_columns[ $key ] = $value;
-			if ( 'title' === $key ) {
-				$new_columns[ self::TAXONOMY ] = __( 'Category', 'instapage-cache' );
-			}
-		}
-
-		return $new_columns;
-	}
-
-	/**
-	 * Render taxonomy column.
-	 *
-	 * @param string $column Column name.
-	 * @param int    $post_id Post ID.
-	 */
-	public function render_taxonomy_column( string $column, int $post_id ): void {
-		if ( self::TAXONOMY !== $column ) {
-			return;
-		}
-
-		$terms = get_the_terms( $post_id, self::TAXONOMY );
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
-			echo '—';
-			return;
-		}
-
-		$term_links = array_map(
-			function ( $term ) {
-				return sprintf(
-					'<a href="%s">%s</a>',
-					esc_url( add_query_arg( self::TAXONOMY, $term->slug, admin_url( 'edit.php?post_type=' . self::POST_TYPE ) ) ),
-					esc_html( $term->name )
-				);
-			},
-			$terms
-		);
-
-		echo wp_kses_post( implode( ', ', $term_links ) );
-	}
 
 	/**
 	 * Add taxonomy filter dropdown.
@@ -294,65 +287,5 @@ class PostType {
 				'value_field'     => 'slug',
 			)
 		);
-	}
-
-	/**
-	 * Render bulk edit fields.
-	 *
-	 * @param string $column_name Column name.
-	 * @param string $post_type Post type.
-	 */
-	public function render_bulk_edit_fields( string $column_name, string $post_type ): void {
-		if ( self::POST_TYPE !== $post_type || self::TAXONOMY !== $column_name ) {
-			return;
-		}
-
-		?>
-		<fieldset class="inline-edit-col-left">
-			<div class="inline-edit-col">
-				<label>
-					<span class="title"><?php esc_html_e( 'Category', 'instapage-cache' ); ?></span>
-					<span class="input-text-wrap">
-						<?php
-						wp_dropdown_categories(
-							array(
-								'show_option_all' => __( '— No Change —', 'instapage-cache' ),
-								'taxonomy'        => self::TAXONOMY,
-								'name'            => 'bulk_' . self::TAXONOMY,
-								'orderby'         => 'name',
-								'hierarchical'    => true,
-								'depth'           => 3,
-								'show_count'      => false,
-								'hide_empty'      => false,
-								'value_field'     => 'term_id',
-							)
-						);
-						?>
-					</span>
-				</label>
-			</div>
-		</fieldset>
-		<?php
-	}
-
-	/**
-	 * Save bulk edit fields.
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	public function save_bulk_edit_fields( int $post_id ): void {
-		if ( ! isset( $_POST[ 'bulk_' . self::TAXONOMY ] ) ) {
-			return;
-		}
-
-		if ( ! current_user_can( 'edit_instapage_cache' ) ) {
-			return;
-		}
-
-		$term_id = intval( $_POST[ 'bulk_' . self::TAXONOMY ] );
-
-		if ( $term_id > 0 ) {
-			wp_set_post_terms( $post_id, array( $term_id ), self::TAXONOMY );
-		}
 	}
 }

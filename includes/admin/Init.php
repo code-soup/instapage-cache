@@ -52,6 +52,7 @@ class Init {
 		$this->sync_service  = new SyncService();
 		$this->taxonomy_meta = new TaxonomyMeta();
 		$this->add_hooks();
+		$this->post_type->init_menu_hooks();
 	}
 
 	/**
@@ -63,22 +64,12 @@ class Init {
 		// Admin-specific hooks
 		$hooker->add_actions(
 			array(
-				array( 'admin_enqueue_scripts', $this ),
-			)
-		);
+				// array( 'admin_enqueue_scripts', $this ),
 
-		// Post type hooks (always register, needed on frontend too)
-		$hooker->add_actions(
-			array(
+				// Post type hooks (always register, needed on frontend too)
 				array( 'init', $this->post_type, 'register' ),
 				array( 'init', $this->post_type, 'add_capabilities' ),
-				array( 'admin_menu', $this->post_type, 'init_menu_hooks', 5 ),
-			)
-		);
 
-		// Sync service hooks
-		$hooker->add_actions(
-			array(
 				// Schedule cron
 				array( 'init', $this, 'schedule_sync_cron' ),
 				// Cron hook
@@ -87,6 +78,7 @@ class Init {
 				array( 'admin_post_instapage_cache_manual_sync', $this, 'handle_manual_sync' ),
 				array( 'admin_post_instapage_cache_toggle', $this, 'handle_cache_toggle' ),
 				array( 'admin_post_instapage_cache_clear', $this, 'handle_cache_clear' ),
+				
 			)
 		);
 	}

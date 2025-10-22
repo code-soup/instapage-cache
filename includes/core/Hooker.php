@@ -163,8 +163,8 @@ class Hooker {
 			$hook          = $args[0] ?? null;
 			$component     = $args[1] ?? null;
 			$method        = isset( $args[2] ) ? $args[2] : null;
-			$priority      = isset( $args[3] ) ? $args[3] : 10;
-			$accepted_args = isset( $args[4] ) ? $args[4] : 1;
+			$priority      = isset( $args[3] ) ? intval( $args[3] ) : 10;
+			$accepted_args = isset( $args[4] ) ? intval( $args[4] ) : 1;
 
 			$this->add_filter( $hook, $component, $method, $priority, $accepted_args );
 		}
