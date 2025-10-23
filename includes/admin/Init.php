@@ -51,6 +51,7 @@ class Init {
 		$this->post_type     = new PostType();
 		$this->sync_service  = new SyncService();
 		$this->taxonomy_meta = new TaxonomyMeta();
+
 		$this->add_hooks();
 		$this->post_type->init_menu_hooks();
 	}
@@ -64,12 +65,11 @@ class Init {
 		// Admin-specific hooks
 		$hooker->add_actions(
 			array(
-				// array( 'admin_enqueue_scripts', $this ),
+				array( 'admin_enqueue_scripts', $this ),
 
 				// Post type hooks (always register, needed on frontend too)
 				array( 'init', $this->post_type, 'register' ),
-				array( 'init', $this->post_type, 'add_capabilities' ),
-
+				array( 'init', $this, 'create_instapage_cache_role' ),
 				// Schedule cron
 				array( 'init', $this, 'schedule_sync_cron' ),
 				// Cron hook
@@ -78,7 +78,7 @@ class Init {
 				array( 'admin_post_instapage_cache_manual_sync', $this, 'handle_manual_sync' ),
 				array( 'admin_post_instapage_cache_toggle', $this, 'handle_cache_toggle' ),
 				array( 'admin_post_instapage_cache_clear', $this, 'handle_cache_clear' ),
-				
+
 			)
 		);
 	}
@@ -109,21 +109,49 @@ class Init {
 		);
 
 		// Enqueue the vendor libs script, dependent on the runtime.
-		wp_enqueue_script(
-			'codesoup_ilc-vendor',
-			$assets_handler->get_asset_url( 'vendor-libs.js' ),
-			array( 'codesoup_ilc-runtime' ),
-			$plugin_version,
-			true
-		);
+		// wp_enqueue_script(
+		// 	'codesoup_ilc-vendor',
+		// 	$assets_handler->get_asset_url( 'vendor-libs.js' ),
+		// 	array( 'codesoup_ilc-runtime' ),
+		// 	$plugin_version,
+		// 	true
+		// );
 
 		// Enqueue the main admin script, dependent on runtime and vendors.
 		wp_enqueue_script(
 			'codesoup_ilc-admin-common',
 			$assets_handler->get_asset_url( 'admin-common.js' ),
-			array( 'codesoup_ilc-runtime', 'codesoup_ilc-vendor' ),
+			array( 'codesoup_ilc-runtime' ),
 			$plugin_version,
 			true
+		);
+	}
+
+	/**
+	 * Create instapage cache manager role.
+	 */
+	public function create_instapage_cache_role(): void {
+		$role_exists = get_role( 'instapage_cache_manager' );
+
+		if ( $role_exists ) {
+			return;
+		}
+
+		add_role(
+			'instapage_cache_manager',
+			__( 'Instapage Cache Manager', 'instapage-cache' ),
+			array(
+				'read'                           => true,
+				'edit_instapage_cache'           => true,
+				'read_instapage_cache'           => true,
+				'edit_instapage_caches'          => true,
+				'edit_others_instapage_caches'   => true,
+				'publish_instapage_caches'       => true,
+				'read_private_instapage_caches'  => true,
+				'edit_private_instapage_caches'  => true,
+				'edit_published_instapage_caches' => true,
+				'manage_instapage_cache'         => true,
+			)
 		);
 	}
 
@@ -136,6 +164,7 @@ class Init {
 		}
 	}
 
+	
 	/**
 	 * Handle manual sync admin action.
 	 */
@@ -161,6 +190,7 @@ class Init {
 		exit;
 	}
 
+	
 	/**
 	 * Handle cache toggle admin action.
 	 */
@@ -192,6 +222,7 @@ class Init {
 		exit;
 	}
 
+	
 	/**
 	 * Handle cache clear admin action.
 	 */

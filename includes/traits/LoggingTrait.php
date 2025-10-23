@@ -29,6 +29,10 @@ trait LoggingTrait {
 			return;
 		}
 
+		if ( ! defined( 'WP_DEV_DEBUG_ON' ) || ! WP_DEV_DEBUG_ON ) {
+			return;
+		}
+
 		$message = sprintf( '[%s] %s: %s', gmdate( 'Y-m-d H:i:s' ), $level, $message );
 
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log

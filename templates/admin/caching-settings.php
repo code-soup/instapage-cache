@@ -16,16 +16,16 @@ $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['ta
 	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 	<?php
-	// Display sync message using add_admin_notice
+	// Display sync message using wp_admin_notice
 	if ( isset( $_GET['synced'] ) ) {
 		$synced = intval( $_GET['synced'] );
 		$message = isset( $_GET['message'] ) ? sanitize_text_field( wp_unslash( $_GET['message'] ) ) : '';
 		$type = $synced ? 'success' : 'error';
 
-		add_admin_notice(
+		wp_admin_notice(
 			$message,
-			$type,
 			array(
+				'type'        => $type,
 				'dismissible' => true,
 			)
 		);

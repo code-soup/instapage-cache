@@ -46,10 +46,13 @@ class PostType {
 			array( 'submenu_file', $this, 'set_submenu_file_for_taxonomy' ),
 			array( 'months_dropdown_results', '__return_empty_array' ),
 			array( 'manage_' . self::POST_TYPE . '_posts_columns', $this, 'manage_columns' ),
+			array( 'manage_' . self::POST_TYPE . '_posts_custom_column', $this, 'render_caching_column', 10, 2 ),
+			// array( 'quick_edit_enabled_for_post_type', '__return_false' ),
 		]);
 
 		$hooker->add_actions([
 			array( 'restrict_manage_posts', $this, 'add_taxonomy_filter' ),
+			array( 'wp_ajax_toggle_post_cache', $this, 'handle_toggle_cache_ajax' ),
 		]);
 	}
 
@@ -75,12 +78,70 @@ class PostType {
 		);
 	}
 
-	public function manage_columns( $columns ) {
 
+	public function manage_columns( $columns ) {
 		unset( $columns['date'] );
+		$columns['caching'] = __( 'Caching', 'instapage-cache' );
 
 		return $columns;
 	}
+
+	/**
+	 * Render caching column content.
+	 *
+	 * @param string $column_name Column name.
+	 * @param int    $post_id Post ID.
+	 */
+	public function render_caching_column( string $column_name, int $post_id ): void {
+		if ( 'caching' !== $column_name ) {
+			return;
+		}
+
+		$is_enabled = '1' === get_post_meta( $post_id, 'instapage_cache_enabled', true );
+		$nonce = wp_create_nonce( 'toggle_post_cache_' . $post_id );
+
+		$button_class = $is_enabled ? 'button-primary' : 'button-secondary';
+		$button_text = $is_enabled ? __( 'Disable', 'instapage-cache' ) : __( 'Enable', 'instapage-cache' );
+		$status_text = $is_enabled ? __( 'Active', 'instapage-cache' ) : __( 'Inactive', 'instapage-cache' );
+		$new_status = $is_enabled ? '0' : '1';
+
+		require plugin()->config['PLUGIN_BASE_PATH'] . 'templates/admin/caching-column.php';
+	}
+
+	/**
+	 * Handle cache toggle AJAX request.
+	 */
+	public function handle_toggle_cache_ajax(): void {
+		$post_id = intval( $_POST['post_id'] ?? 0 );
+		check_ajax_referer( 'toggle_post_cache_' . $post_id );
+
+		if ( ! current_user_can( 'manage_instapage_cache' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Permission denied', 'instapage-cache' ) ) );
+		}
+
+		$enable = intval( $_POST['enable'] ?? 1 );
+
+		if ( ! $post_id ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid post ID', 'instapage-cache' ) ) );
+		}
+
+		$sync_service = new \CodeSoup\InstapageCache\Services\SyncService();
+		$result = $sync_service->toggle_cache_status( $post_id, (bool) $enable );
+
+		if ( $result ) {
+			$new_status = $enable ? __( 'Enabled', 'instapage-cache' ) : __( 'Disabled', 'instapage-cache' );
+			wp_send_json_success(
+				array(
+					'status' => $new_status,
+					'enabled' => (bool) $enable,
+				)
+			);
+		} else {
+			wp_send_json_error( array( 'message' => __( 'Failed to toggle cache status', 'instapage-cache' ) ) );
+		}
+	}
+
+
 
 	/**
 	 * Register the custom post type.
@@ -131,7 +192,7 @@ class PostType {
 			'hierarchical'       => false,
 			'menu_position'      => null,
 			'menu_icon'          => 'dashicons-performance',
-			'supports'           => array( 'title' ),
+			'supports'           => array('title'),
 			'show_in_rest'       => false,
 		);
 
@@ -141,7 +202,9 @@ class PostType {
 		 * Hides 'Add new' button
 		 */
 		global $wp_post_types;
-    	$wp_post_types['cs_instapage_cache']->cap->create_posts = 'do_not_allow';
+
+    	$wp_post_types['cs_instapage_cache']->cap->create_posts = '';
+		$wp_post_types['cs_instapage_cache']->cap->delete_posts = '';
 	}
 
 	/**
@@ -225,7 +288,7 @@ class PostType {
 			! empty( $_GET['tag_ID'] )
 			&& ( strpos( $submenu_file, 'cs_instapage_cache_cat' ) !== false || strpos( $submenu_file, 'cs_instapage_cache' ) !== false )
 			) {
-			$submenu_file = 'edit-tags.php?taxonomy=cs_instapage_cache_cat&amp;post_type=cs_instapage_cache';
+			$submenu_file = 'edit-tags.php?taxonomy=cs_instapage_cache_cat&post_type=cs_instapage_cache';
 		}
 
 		return $submenu_file;
@@ -241,15 +304,15 @@ class PostType {
 			// Post type capabilities
 			$role->add_cap( 'edit_instapage_cache' );
 			$role->add_cap( 'read_instapage_cache' );
-			$role->add_cap( 'delete_instapage_cache' );
+			// $role->add_cap( 'delete_instapage_cache' );
 			$role->add_cap( 'edit_instapage_caches' );
 			$role->add_cap( 'edit_others_instapage_caches' );
 			$role->add_cap( 'publish_instapage_caches' );
 			$role->add_cap( 'read_private_instapage_caches' );
-			$role->add_cap( 'delete_instapage_caches' );
-			$role->add_cap( 'delete_private_instapage_caches' );
-			$role->add_cap( 'delete_published_instapage_caches' );
-			$role->add_cap( 'delete_others_instapage_caches' );
+			// $role->add_cap( 'delete_instapage_caches' );
+			// $role->add_cap( 'delete_private_instapage_caches' );
+			// $role->add_cap( 'delete_published_instapage_caches' );
+			// $role->add_cap( 'delete_others_instapage_caches' );
 			$role->add_cap( 'edit_private_instapage_caches' );
 			$role->add_cap( 'edit_published_instapage_caches' );
 
@@ -271,7 +334,9 @@ class PostType {
 			return;
 		}
 
-		$selected = isset( $_GET[ self::TAXONOMY ] ) ? sanitize_text_field( wp_unslash( $_GET[ self::TAXONOMY ] ) ) : '';
+		$selected = isset( $_GET[ self::TAXONOMY ] )
+			? sanitize_text_field( wp_unslash( $_GET[ self::TAXONOMY ] ) )
+			: '';
 
 		wp_dropdown_categories(
 			array(

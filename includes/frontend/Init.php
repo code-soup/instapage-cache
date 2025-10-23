@@ -31,7 +31,7 @@ class Init {
 		$hooker = plugin()->get( 'hooker' );
 		$hooker->add_actions(
 			array(
-				array( 'wp_enqueue_scripts', $this ),
+				// array( 'wp_enqueue_scripts', $this ),
 			)
 		);
 	}

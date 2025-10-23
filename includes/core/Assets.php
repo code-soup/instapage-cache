@@ -82,9 +82,20 @@ final class Assets {
 		$path = $asset_key;
 
 		// In production, get the hashed filename from the manifest.
-		if ( $this->is_production ) {
+		// if ( $this->is_production ) {
 			$manifest = $this->get_manifest();
 			$path     = $manifest[ $asset_key ] ?? $asset_key;
+		// }
+
+		// Detect file extension and prepend scripts/ or styles/ if not already present
+		$extension = pathinfo( $path, PATHINFO_EXTENSION );
+
+		if ( ! str_starts_with( $path, 'scripts/' ) && ! str_starts_with( $path, 'styles/' ) ) {
+			if ( 'js' === $extension ) {
+				$path = 'scripts/' . $path;
+			} elseif ( in_array( $extension, array( 'css' ), true ) ) {
+				$path = 'styles/' . $path;
+			}
 		}
 
 		return $this->plugin->config['PLUGIN_URL'] . 'dist/' . $path;

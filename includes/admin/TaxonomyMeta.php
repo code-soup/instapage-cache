@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace CodeSoup\InstapageCache\Admin;
 
+use CodeSoup\InstapageCache\Services\SyncService;
 use function CodeSoup\InstapageCache\plugin;
 
 // Exit if accessed directly.
@@ -33,27 +34,18 @@ class TaxonomyMeta {
 		$hooker = plugin()->get( 'hooker' );
 		$hooker->add_actions(
 			array(
-				array( PostType::TAXONOMY . '_add_form_fields', $this, 'add_meta_field' ),
 				array( PostType::TAXONOMY . '_edit_form_fields', $this, 'edit_meta_field', 10, 2 ),
 				array( 'edited_' . PostType::TAXONOMY, $this, 'save_meta_field', 10, 2 ),
 				array( 'create_' . PostType::TAXONOMY, $this, 'save_meta_field', 10, 2 ),
-				array( 'admin_head',  $this, 'hide_edit_term_fields' ),
+				array( 'admin_head',  $this, 'hide_meta_fields' ),
 			)
 		);
 
 		$hooker->add_filters(
 			array(
-				array( 'manage_edit-' . PostType::TAXONOMY . '_columns', $this, 'remove_description_column' ),
+				array( 'manage_edit-' . PostType::TAXONOMY . '_columns', $this, 'edit_columns' ),
 			)
 		);
-	}
-
-	/**
-	 * Add meta field to add term form.
-	 */
-	public function add_meta_field(): void {
-		// Don't show on add form, only on edit
-		return;
 	}
 
 	/**
@@ -88,7 +80,7 @@ class TaxonomyMeta {
 	/**
 	 * Hide fields from edit term form.
 	 */
-	public function hide_edit_term_fields(): void {
+	public function hide_meta_fields(): void {
 		global $pagenow;
 
 		// Check if we're on the taxonomy edit page
@@ -155,12 +147,12 @@ class TaxonomyMeta {
 	}
 
 	/**
-	 * Remove description column from taxonomy list.
+	 * Add caching column to taxonomy list.
 	 *
 	 * @param array $columns Taxonomy columns.
 	 * @return array Filtered columns.
 	 */
-	public function remove_description_column( array $columns ): array {
+	public function edit_columns( array $columns ): array {
 
 		unset( $columns['slug'] );
 		unset( $columns['posts'] );

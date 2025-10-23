@@ -21,6 +21,13 @@ class Deactivator {
 	 * Deactivate the plugin.
 	 */
 	public static function deactivate(): void {
-		// Flush if needed only.
+		self::remove_instapage_cache_role();
+	}
+
+	/**
+	 * Remove instapage cache manager role.
+	 */
+	private static function remove_instapage_cache_role(): void {
+		remove_role( 'instapage_cache_manager' );
 	}
 }

@@ -1,1 +1,52 @@
 // Admin layout styles will be added here.
+.post-type-cs_instapage_cache
+{
+    .column-title.has-row-actions .row-title{
+        pointer-events: none;
+    }
+
+    .row-actions .edit,
+    .row-actions .trash {
+        display: none !important;
+    }
+
+    .row-actions .inline {
+        width: 62px;
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .inline-edit-wrapper fieldset:nth-child(1),
+    .inline-edit-wrapper fieldset:nth-child(3) {
+        display: none !important;
+    }
+
+    /**
+     * Cache status column
+     */
+    .column-caching {
+        vertical-align: middle;
+    }
+
+    .cache-status {
+        gap: 8px;
+        display: inline-flex;
+        align-items: center;
+
+        span {
+            flex: 1;
+            flex-basis: 90px;
+            flex-shrink: 0;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+}
+
+.post-type-cs_instapage_cache.taxonomy-cs_instapage_cache_cat a[href="edit-tags.php?taxonomy=cs_instapage_cache_cat&post_type=cs_instapage_cache"] {
+    color: white !important;
+    font-weight: bold;
+}

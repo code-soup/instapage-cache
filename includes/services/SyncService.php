@@ -305,17 +305,10 @@ class SyncService {
 	 * @return bool Success status.
 	 */
 	public function toggle_cache_status( int $post_id, bool $enable = true ): bool {
-		$new_status = $enable ? 'publish' : 'draft';
+		$result = update_post_meta( $post_id, 'instapage_cache_enabled', $enable ? '1' : '0' );
 
-		$result = wp_update_post(
-			array(
-				'ID'          => $post_id,
-				'post_status' => $new_status,
-			)
-		);
-
-		if ( is_wp_error( $result ) ) {
-			$this->log( "Failed to toggle cache status for post {$post_id}: " . $result->get_error_message(), 'error' );
+		if ( false === $result ) {
+			$this->log( "Failed to toggle cache status for post {$post_id}", 'error' );
 			return false;
 		}
 

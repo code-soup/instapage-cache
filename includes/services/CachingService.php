@@ -153,8 +153,10 @@ class CachingService {
 
 		$this->set_path( $_SERVER['REQUEST_URI'] ?? '' );
 
-		// Manually disabled for this page
-		if ( $this->is_page_caching_disabled( intval( $this->get_page_id() ) ) ) {
+		$page_id = intval( $this->get_page_id() );
+
+		// Check if caching is enabled for this page
+		if ( ! $this->is_caching_enabled( $page_id ) ) {
 			return;
 		}
 
@@ -164,11 +166,16 @@ class CachingService {
 
 		$fs = new \WP_Filesystem_Direct( '' );
 
-		echo do_shortcode( $fs->get_contents( $this->get_cache_file_path() ) );
-		printf(
-			'<!-- instapage-cache-plugin-cached-response %s -->',
-			date( 'Y-m-d h:i' )
-		);
+		$page_content = apply_filters( 'instapage_cache_post_process', do_shortcode( $fs->get_contents( $this->get_cache_file_path() ) ) );
+		$show_stamp   = apply_filters( 'instapage_cache_show_stamp', true );
+
+		if ( $show_stamp )
+		{
+			printf(
+				'<!-- instapage-cache-plugin-cached-response %s -->',
+				date( 'Y-m-d h:i' )
+			);
+		}
 
 		exit;
 	}
@@ -277,6 +284,16 @@ class CachingService {
 		$pages = get_option( 'codesoup_ilc_cache_disabled', wp_json_encode( array() ) );
 
 		return is_string( $pages ) ? json_decode( $pages, true ) : array();
+	}
+
+	/**
+	 * Check if caching is enabled for a specific page.
+	 *
+	 * @param int $page_id Page ID.
+	 * @return bool
+	 */
+	private function is_caching_enabled( int $page_id ): bool {
+		return 1 === intval( get_post_meta( $page_id, 'instapage_cache_enabled', true ) );
 	}
 
 	/**
